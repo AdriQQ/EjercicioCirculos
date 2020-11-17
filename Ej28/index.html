@@ -1,69 +1,98 @@
+
 <!DOCTYPE html>
 <html lang="en">
- 
+
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Document</title>
-   <script src="p5.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .miCanvas {
+            border: 1px solid;
+        }
+    </style>
+    <script src="p5.js"></script>
 </head>
- 
+
 <body>
-   <script>
-let listaCirculos = []
-       class Circulo {
-           constructor(x, y, r, color) {
-               this.x = x
-               this.y = y
-               this.r = r
-               this.color = color
-           }
-           dibujar() {
- 
-           }
-       }
- 
-       function generarCirculo() {
-           // PASO 1: este método genera un círculo aleatorio
-           // y lo devuelve
-           let color = Math.random()>0.5?'red':'blue'
-           let x = numeroAleatorio(0,width)
-           let y = numeroAleatorio(0,height)
-           
-       }
- 
-       function numeroAleatorio(min, max) {
-           return Math.round(Math.random() * (max - min) + min);
-       }
- 
-       function setup() {
-           createCanvas(400, 400);
-       }
- 
-       function draw() {
-           background(220);
-           // PASO 6 aquí generas continuamente circulo nuevos
-           //y los metes en la lista dibujo todos los círculos
+    <script>
+
+        let listaCirculos = []; // Array de circulos
+        class Circulo {
+            constructor(posX, posY, radio, color) {
+                this.posX = posX;
+                this.posY = posY;
+                this.radio = radio;
+                this.color = color;
+            }
+            dibujar(){
+                strokeWeight(1);
+                fill(this.color);
+                circle(this.posX, this.posY, this.radio*2)
+            }
+            mover(){
+                let velocidad = 10
+                this.posY += velocidad;
+            }
+        }
+
+        function pintar() {
+             background(255);
           
-           // PASO 2 aquí tienes que dibujar todos los círculos
-           // de la lista
-          
-           // PASO 5 aquí muestras el score del jugador
- 
-       }
- 
-       function colisionMouseCirculo(mx, my, circulo) {
-           // PASO 3   Este método devolverá un booleado
-           // indicando si hay colisión entre el ratón y el círculo
-       }
- 
-       function mousePressed() {
-           // PASO 4   Este método determina que hacer cuando
-           // hay colisión con algún círculo
-          
-           // PASO 7 Aquí determina si el jugo termina
-       }
-   </script>
+            listaCirculos.forEach(circulo => {
+                circulo.dibujar()
+            })
+
+        }
+        function mover(){
+            listaCirculos.forEach(circulo => {
+                circulo.mover()
+            })
+        }
+
+        function numeroAleatorio(min, max) {
+            return Math.round(Math.random() * (max - min) + min);
+        }
+        
+
+        function generarNuevoCirculoAleatorio() {
+            let posX = numeroAleatorio(0,width);
+            let posY = numeroAleatorio(0,height);
+            let radio = numeroAleatorio(20,50);
+            let color = Math.random()>0.5?'red':'blue';
+            let circulo = new Circulo(posX, posY, radio, color);
+            return circulo;
+        }
+
+        function generarYGuardarNuevoCirculo() {
+            let circulo = generarNuevoCirculoAleatorio()
+            listaCirculos.push(circulo);
+        }
+
+        function borrarCirculosFueraPantalla() {
+            let nuevaLista = []
+            listaCirculos.forEach(circulo => {
+                if(circulo.posY < canvas.height){
+                    nuevaLista.push(circulo)
+                }
+            })
+            listaCirculos = nuevaLista
+        }
+
+     
+        function setup() {
+            createCanvas(400, 400);
+            frameRate( 30 )
+        }
+
+        function draw() {
+            background(220);
+            generarYGuardarNuevoCirculo()
+            pintar()
+            mover()
+            borrarCirculosFueraPantalla()
+        }
+    </script>
 </body>
- 
+
 </html>
